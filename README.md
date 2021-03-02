@@ -18,19 +18,16 @@ cd SATC/
 ```
 
 ### Install dependencies
-The required R package (mclust) can be easily installed using requirements.txt file included in the satc folder.
-```bash
-Rscript requirement.R
-```
+The required R package (mclust) can be easily installed, we have already included an automatic install code in our main function if needed.
 
 ## Usage
 
-SATC is run by exceuting the main function file satc.R:
+SATC is run by executing the main function file satc.R:
 ```bash
 Rscript --vanilla satc.R <prefix> <idxstat folder path> <output folder path>
 ```
 
-SATC will output files in a list and saved as a single R object in (.rds) format. To read files in R:
+SATC will output a list and saved as a single R object in (.rds) format. To read files in R:
 ```R
 data <-readRDS(file ="path to <prefix>.sexSample_sexScaffolds.rds") #reads SATC output
 sexSamples <- data$sex #inferred sex for samples
@@ -48,6 +45,32 @@ plotScafs(data)
 #To get boxplots of Sex-linked Scaffolds grouped by sex
 plotScafs(data,ab=T)
 ```
+## Example Usage
+
+Below is an example of performing SATC on our leopard data:
+```bash
+Rscript --vanilla satc.R leo examples/idx_leopard/ .
+```
+
+```R
+data <-readRDS(file ="leo.sexSample_sexScaffolds.rds")
+
+#Plotting
+source("satc.R")
+plotDepth(data)
+plotGroup(data)
+plotScafs(data)
+```
+By running SATC, it will automatically produced two plots (normalized depth plot, PCA and Sex-linked Scaffolds) in png format.
+
+For example, here's a normalized depth plot of leopard dataset:
+<p align="center" width="100%">
+    <img width="50%" src="https://github.com/popgenDK/SATC/blob/6f919613ed9765ef108bcdb63a37d18c9f3e7ae7/examples/plots/leo_depth.png"> 
+</p>
+
+Also PCA plot and boxplot of X/Z Scaffolds:
+![](https://github.com/popgenDK/SATC/blob/6f919613ed9765ef108bcdb63a37d18c9f3e7ae7/examples/plots/leo_PCA_and_boxplot.png)
+
 
 ## Citation
 Please cite our papers:
