@@ -15,8 +15,8 @@ SPECIES=args[1]
 IDXFOLD=args[2] 
 OUTFOLD=args[3] 
 cat("SPECIES\t:",SPECIES,"\nIDXFOLD\t: ",IDXFOLD,"\nOUTFOLD\t: ",OUTFOLD,"\n")
-library(mclust) 
-library(ggplot2) 
+if (!require(mclust)) install.packages('mclust')
+library(mclust)  
 filterScaffold <- function(dat,minLength=1e5,M=5,range=c(0.3,2)){
 			ord <- order(dat[[1]]$V2,decreasing=T)
 			dat <- lapply(dat,function(x) x[ord,])
