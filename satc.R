@@ -12,9 +12,9 @@ if (length(args)<2) {
 
 
 SPECIES=args[1] 
-IDXFOLD=args[2] 
+IDXFILE=args[2] 
 OUTFOLD=args[3] 
-cat("SPECIES\t:",SPECIES,"\nIDXFOLD\t: ",IDXFOLD,"\nOUTFOLD\t: ",OUTFOLD,"\n")
+cat("SPECIES\t:",SPECIES,"\nIDXFILE\t: ",IDXFILE,"\nOUTFOLD\t: ",OUTFOLD,"\n")
 if (!require(mclust)) install.packages('mclust')
 library(mclust)  
 filterScaffold <- function(dat,minLength=1e5,M=5,range=c(0.3,2)){
@@ -97,12 +97,12 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
 			mat <- sapply(x$dat,function(y) y$norm)
 			rownames(mat) <- x$dat[[1]][,1]
   
-			sexAssoScaf <- x$dat[[1]][,1][x$SexScaffolds$Sex_linked_Scaffolds]
-			sexScaf <- x$dat[[1]][,1][x$SexScaffolds$X_Z_Scaffolds]
+			sexLinkedScaf <- x$dat[[1]][,1][x$SexScaffolds$Sex_linked_Scaffolds]
+			XZScaf <- x$dat[[1]][,1][x$SexScaffolds$X_Z_Scaffolds]
 
      			keep <- x$dat[[1]][,1][x$SexScaffolds$X_Z_Scaffolds]
      			if(abnormal)
-       			keep<- c(keep,x$sexAssoScaf[!sexAssoScaf%in%sexScaf])  
+       			keep<- x$dat[[1]][,1][x$SexScaffolds$Sex_linked_Scaffolds]
   
   			mat <- mat[keep,]
   			nam <- gsub("NW_0176|NW_0050","",rownames(mat))
@@ -114,7 +114,7 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
   			at <- cumsum(rep(c(1.2,1),m))
   			if(missing(ylim))
     			ylim <-range(mat)
-  			b<-boxplot(as.vector(t(mat))~g+s,las=2,col=col12,names=NA,ylab="Normalized Depth",at=at,axes=F,xlab="Sex Associated Scaffolds",lwd=0.5,pch=16,outcol=col12,ylim=ylim,cex.lab=1.2)
+  			b<-boxplot(as.vector(t(mat))~g+s,las=2,col=col12,names=NA,ylab="Normalized Depth",at=at,axes=F,xlab="Sex Scaffolds",lwd=0.5,pch=16,outcol=col12,ylim=ylim,cex.lab=1.2)
   			#  abline(v=1:m*2.2+0.6,lty=2)
   			axis(2,cex.axis=1.05)
   
@@ -130,8 +130,8 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
 } 
 
 
-satc <- function(SPECIES,IDXFOLD,OUTFOLD,minLength=1e5,M=5) { 
-		filenames <- list.files(IDXFOLD,full=TRUE,pattern="idxstats") 
+satc <- function(SPECIES,IDXFILE,OUTFOLD,minLength=1e5,M=5) { 
+		filenames <- scan(IDXFILE,what="sUp") 
 		## read.files
 		r <- lapply(filenames, read.table,colClasses=c("character","integer","integer","integer")) 
 		names(r) <- basename(filenames)
@@ -159,6 +159,6 @@ satc <- function(SPECIES,IDXFOLD,OUTFOLD,minLength=1e5,M=5) {
 
 	}
 
-satc(SPECIES,IDXFOLD,OUTFOLD)
-paste("All output saved in ", OUTFOLD,"/",SPECIES,".rds",". Use readRDS to read file",sep="")
+satc(SPECIES,IDXFILE,OUTFOLD)
+paste("All output saved in ", OUTFOLD,"/",SPECIES,"sexSamples_sexScaffolds.rds",". Use readRDS to read file",sep="")
 
