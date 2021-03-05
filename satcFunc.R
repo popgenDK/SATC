@@ -1,7 +1,9 @@
 #!/usr/bin/env R
 col12<-c("#FFB7FC","#ef8a62","#fddbc7","#d1e5f0","#FF106A","#FFB7FC")[c(1,5)]
-if (!require(mclust)) install.packages('mclust')
+
+if (!require(mclust)) install.packages('mclust',repos='http://cran.us.r-project.org')
 library(mclust)  
+
 filterScaffold <- function(dat,minLength=1e5,M=5,range=c(0.3,2)){
 			ord <- order(dat[[1]]$V2,decreasing=T)
 			dat <- lapply(dat,function(x) x[ord,])
@@ -31,8 +33,8 @@ plotDepth <- function(dat,ylim,col=1:length(dat),...){
 cex.axis=1.5,...)
   			s<- sapply(1:length(dat),function(x) 
 			lines(scafLen,dat[[x]][,"norm"],col=col[x],pch=16,type="b",cex=.3))
-  			title(ylab="normalized depth", line=4, cex.lab=1.5, family="Calibri Light")
-  			title(xlab="scaffold length", line=4, cex.lab=1.5, family="Calibri Light")
+  			title(ylab="normalized depth", line=4, cex.lab=1.5)
+  			title(xlab="scaffold length", line=4, cex.lab=1.5)
 }
 
 sexDetermine <- function(dat,K=2){
@@ -113,4 +115,20 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
   			abline(h = 0.5, col="#20A387FF", lwd=1, lty=2)
   			abline(h = 1, col="#20A387FF", lwd=1, lty=2)
 } 
+
+
+
+satc <- function(SPECIES,IDXFILE,OUTFOLD,minLength=1e5,M=5) { 
+		filenames <- scan(IDXFILE,what="sUp") 
+		## read.files
+		r <- lapply(filenames, read.table,colClasses=c("character","integer","integer","integer")) 
+		names(r) <- basename(filenames)
+		## filter and normalized
+		rFilt <- filterScaffold(r,minLength=1e5,M=5)
+		## identify sex
+		sex <- sexDetermine(rFilt) 
+		return(sex)
+		
+
+}
 
