@@ -68,7 +68,7 @@ For example, here's a normalized depth plot of leopard dataset:
     <img width="50%" src="https://github.com/popgenDK/SATC/blob/6f919613ed9765ef108bcdb63a37d18c9f3e7ae7/examples/plots/leo_depth.png"> 
 </p>
 
-Also PCA plot and boxplot of X/Z Scaffolds:
+Also PCA plot and boxplot of Sex-linked Scaffolds:
 ![](https://github.com/popgenDK/SATC/blob/6f919613ed9765ef108bcdb63a37d18c9f3e7ae7/examples/plots/leo_PCA_and_boxplot.png)
 
 
