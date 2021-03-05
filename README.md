@@ -24,7 +24,7 @@ The required R package (mclust) can be easily installed, we have already include
 
 SATC is run by executing the main function file satc.R:
 ```bash
-Rscript --vanilla satc.R <prefix> <idxstat folder path> <output folder path>
+Rscript --vanilla satc.R <prefix> <idxfile> <output folder path>
 ```
 
 SATC will output a list and saved as a single R object in (.rds) format. To read files in R:
@@ -35,7 +35,7 @@ X_Z_scaffolds <- data$SexScaffolds[data$SexScaffold$X_Z_Scaffolds,1] #get a vect
 Sex_linked_Scaffolds <- data$SexScaffolds[data$SexScaffold$Sex_linked_Scaffolds,1] #get a vector of Sex_linked_Scaffolds
 
 #Plotting
-source("satc.R")
+source("satcFun.R")
 #To get plot of normalized depth from all scaffolds and all samples
 plotDepth(data)
 #To get a PCA plot, different color suggest different sex
@@ -49,14 +49,14 @@ plotScafs(data,ab=T)
 
 Below is an example of performing SATC on our leopard data:
 ```bash
-Rscript --vanilla satc.R leo examples/idx_leopard/ .
+Rscript --vanilla satc.R leo examples/leo_idxstats_path.txt .
 ```
 
 ```R
 data <-readRDS(file ="leo.sexSample_sexScaffolds.rds")
 
 #Plotting
-source("satc.R")
+source("satcFun.R")
 plotDepth(data)
 plotGroup(data)
 plotScafs(data)
