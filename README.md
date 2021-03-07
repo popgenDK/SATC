@@ -27,7 +27,7 @@ SATC is run by executing the main function file satc.R:
 Rscript --vanilla satc.R <prefix> <idxfile> <output folder path>
 ```
 
-SATC will output a list and saved as a single R object in (.rds) format. To read files in R:
+SATC will output three text files: a list of the inferred sex for each sample, a list with all sex linked scaffolds and another list with all sex linked scaffolds with depth difference consistent with being XZ chrosomome. It also produces two plots, and an R data object in (.rds) format conaining an R list with the data produced by SATC. To read the .rds file in R and extract the data and plots:
 ```R
 data <-readRDS(file ="path to <prefix>.sexSample_sexScaffolds.rds") #reads SATC output
 sexSamples <- data$sex #inferred sex for samples
@@ -69,7 +69,7 @@ For example, here's a normalized depth plot of leopard dataset:
 </p>
 
 Also PCA plot and boxplot of Sex-linked Scaffolds:
-![](https://github.com/popgenDK/SATC/blob/6f919613ed9765ef108bcdb63a37d18c9f3e7ae7/examples/plots/leo_PCA_and_boxplot.png)
+![]()
 
 
 ## Citation
