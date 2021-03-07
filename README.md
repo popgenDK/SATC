@@ -65,12 +65,12 @@ By running SATC, it will automatically produced two plots (normalized depth plot
 
 For example, here's a normalized depth plot of leopard dataset:
 <p align="center" width="100%">
-    <img width="85%" src="https://github.com/popgenDK/SATC/blob/6f919613ed9765ef108bcdb63a37d18c9f3e7ae7/examples/plots/leo_depth.png"> 
+    <img width="50%" src="https://github.com/popgenDK/SATC/blob/6f919613ed9765ef108bcdb63a37d18c9f3e7ae7/examples/plots/leo_depth.png"> 
 </p>
 
 Also PCA plot and boxplot of Sex-linked Scaffolds:
 <p align="center" width="100%">
-    <img width="60%" src="https://github.com/popgenDK/SATC/blob/c0303631e6257810edc201f52debb5ddcad97fa3/examples/plots/leo_PCA_and_boxplot.png">
+    <img width="100%" src="https://github.com/popgenDK/SATC/blob/c0303631e6257810edc201f52debb5ddcad97fa3/examples/plots/leo_PCA_and_boxplot.png">
 </p>
 
 
