@@ -89,7 +89,7 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
 
      			keep <- x$dat[[1]][,1][x$SexScaffolds$X_Z_Scaffolds]
      			if(abnormal)
-       			keep<- x$dat[[1]][,1][x$SexScaffolds$Sex_linked_Scaffolds]
+                            keep<- c(keep,x$dat[[1]][,1][!x$SexScaffolds$X_Z_Scaffolds & x$SexScaffolds$Sex_linked_Scaffolds  ])
   
   			mat <- mat[keep,]
   			nam <- gsub("NW_0176|NW_0050","",rownames(mat))
