@@ -63,7 +63,7 @@ plotDepth <- function(dat,ylim,col=1:length(dat),...){
     title(xlab="scaffold length", line=4, cex.lab=1.5)
 }
 
-sexDetermine <- function(dat,K=2){
+sexDetermine <- function(dat,K=2,weight=TRUE){
     
     mat_first <- sapply(dat,function(x) x$norm)
     #center
@@ -77,7 +77,16 @@ sexDetermine <- function(dat,K=2){
     pca <- svd
     pca$x <- svd$u[,1:maxRank]%*%SIG
     
-    group <- Mclust(pca$x[,1:K],G=2)
+    if(weight)
+      d<- pca$x[,1:K]
+    else
+      d <- svd$u[,1:maxRank]
+    
+    group <- Mclust(d,G=2,modelName="EVV")
+    
+    if(is.null(group))
+      group <- Mclust(d,G=2)
+    
     g <- group$classification
     
     beta <- rowMeans(mat[,g==1])-rowMeans(mat[,g==2])
@@ -93,7 +102,7 @@ sexDetermine <- function(dat,K=2){
     autoScafs<- as.logical
     pval <- apply(mat,1,function(x) t.test(x~sex)$p.value) #new
     sexAssoScafs <- pval < 0.05/nrow(mat) #new
-    list(dat=dat,pca=pca,sex=sex,SexScaffolds=data.frame(Name=dat[[1]][,1],Length=dat[[1]][,2],X_Z_Scaffolds=sexScafs,Sex_linked_Scaffolds=sexAssoScafs,Pval=pval,stringsAsFactors = FALSE))
+    list(dat=dat,pca=pca,sex=sex,SexScaffolds=data.frame(Name=dat[[1]][,1],Length=dat[[1]][,2],X_Z_Scaffolds=sexScafs,Abnormal_sex_linked_Scaffolds=sexAssoScafs,Pval=pval,stringsAsFactors = FALSE))
 }
 
 plotGroup <- function(x,main=""){
@@ -105,17 +114,15 @@ plotGroup <- function(x,main=""){
 }
 
 plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
-    
     par(mar=c(4.1,4.1,3.1,2.1))
     mat <- sapply(x$dat,function(y) y$norm)
     rownames(mat) <- x$dat[[1]][,1]
+    sexLinkedScaf <- x$SexScaffolds$Abnormal_sex_linked_Scaffolds|x$SexScaffolds$X_Z_Scaffolds
+    XZScaf <- x$SexScaffolds$X_Z_Scaffolds
     
-    sexLinkedScaf <- x$dat[[1]][,1][x$SexScaffolds$Sex_linked_Scaffolds]
-    XZScaf <- x$dat[[1]][,1][x$SexScaffolds$X_Z_Scaffolds]
-
-    keep <- x$dat[[1]][,1][x$SexScaffolds$X_Z_Scaffolds]
+    keep <- x$dat[[1]][,1][XZScaf]
     if(abnormal)
-        keep<- c(keep,x$dat[[1]][,1][!x$SexScaffolds$X_Z_Scaffolds & x$SexScaffolds$Sex_linked_Scaffolds  ])
+      keep<- x$dat[[1]][,1][sexLinkedScaf]
     
     mat <- mat[keep,]
     nam <- gsub("NW_0176|NW_0050","",rownames(mat))
@@ -157,4 +164,3 @@ satc <- function(SPECIES,IDXFILE,OUTFOLD,minLength=1e5,M=5) {
     
     
 }
-
