@@ -63,8 +63,8 @@ plotDepth <- function(dat,ylim,col=1:length(dat),...){
     title(xlab="scaffold length", line=4, cex.lab=1.5)
 }
 
-sexDetermine <- function(dat,K=2,weight=TRUE){
-    
+sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian"){
+     model <- char.expand(model, c("gaussian","hclust"))
     mat_first <- sapply(dat,function(x) x$norm)
     #center
     mat <- mat_first-rowMeans(mat_first)
@@ -81,14 +81,17 @@ sexDetermine <- function(dat,K=2,weight=TRUE){
       d<- pca$x[,1:K]
     else
       d <- svd$u[,1:maxRank]
-    
-    group <- Mclust(d,G=2,modelName="EVV")
-    
-    if(is.null(group))
-      group <- Mclust(d,G=2)
-    
-    g <- group$classification
-    
+    if(model=="gaussian"){
+        group <- Mclust(d,G=2,modelName="EVV")
+        if(is.null(group))
+            group <- Mclust(d,G=2)
+        g <- group$classification
+    }
+    else if(model=="hclust"){
+        hh<-hclust(dist(d))
+        g <- cutree(hh, k=2) # cut
+    }
+     
     beta <- rowMeans(mat[,g==1])-rowMeans(mat[,g==2])
     if( mean(beta[ abs(beta) > 0.4 & abs(beta) < 0.6]) > 0 )
         sex <- c("homomorphic","heteromorphic")[g]
