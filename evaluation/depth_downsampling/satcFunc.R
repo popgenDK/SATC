@@ -4,16 +4,18 @@ col12<-c("#FFB7FC","#ef8a62","#fddbc7","#d1e5f0","#FF106A","#FFB7FC")[c(1,5)]
 if (!require(mclust)) install.packages('mclust',repos='http://cran.us.r-project.org')
 library(mclust)  
 
-filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds,range=c(0.3,2),useMedian=FALSE){
+filterScaffold <- function(dat,depth_sim,depth_real,minLength=1e5,M=5,normScaffolds,range=c(0.3,2),useMedian=FALSE){
     #order of size of scaffold
+    depth_sim=as.numeric(depth_sim); depth_real=as.numeric(depth_real)
     ord <- order(dat[[1]]$V2,decreasing=T)
-
     keepScarfs <- dat[[1]]$V2[ord] > minLength
     fun <- function(x){
-        colnames(x)[1:3] <- c("scaffold","Length","Nreads")
-        rownames(x) <- x$scaffold
-        x[ord,][keepScarfs,]
+      colnames(x)[1:3] <- c("scaffold","Length","Nreads")
+      rownames(x) <- x$scaffold
+      x[ord,][,3]=sapply(x[ord,][,3], function(x) rbinom(1,x,depth_sim/depth_real))
+      x[ord,][keepScarfs,]
     }
+  
     ## filter and sort idxstat files
     filtered <- lapply(dat,fun)
 
@@ -63,8 +65,8 @@ plotDepth <- function(dat,ylim,col=1:length(dat),...){
     title(xlab="scaffold length", line=4, cex.lab=1.5)
 }
 
-sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian"){
-     model <- char.expand(model, c("gaussian","hclust"))
+sexDetermine <- function(dat,K=2,weight=TRUE){
+    
     mat_first <- sapply(dat,function(x) x$norm)
     #center
     mat <- mat_first-rowMeans(mat_first)
@@ -81,17 +83,14 @@ sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian"){
       d<- pca$x[,1:K]
     else
       d <- svd$u[,1:maxRank]
-    if(model=="gaussian"){
-        group <- Mclust(d,G=2,modelName="EVV")
-        if(is.null(group))
-            group <- Mclust(d,G=2)
-        g <- group$classification
-    }
-    else if(model=="hclust"){
-        hh<-hclust(dist(d))
-        g <- cutree(hh, k=2) # cut
-    }
-     
+    
+    group <- Mclust(d,G=2,modelName="EVV")
+    
+    if(is.null(group))
+      group <- Mclust(d,G=2)
+    
+    g <- group$classification
+    
     beta <- rowMeans(mat[,g==1])-rowMeans(mat[,g==2])
     if( mean(beta[ abs(beta) > 0.4 & abs(beta) < 0.6]) > 0 )
         sex <- c("homomorphic","heteromorphic")[g]
@@ -154,16 +153,16 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
 
 
 
-satc <- function(SPECIES,IDXFILE,OUTFOLD,minLength=1e5,M=5) { 
-    filenames <- scan(IDXFILE,what="sUp") 
-    ## read.files
-    r <- lapply(filenames, read.table,colClasses=c("character","integer","integer","integer")) 
-    names(r) <- basename(filenames)
-    ## filter and normalized
-    rFilt <- filterScaffold(r,minLength=1e5,M=5)
-    ## identify sex
-		sex <- sexDetermine(rFilt) 
-    return(sex)
-    
-    
+satc <- function(SPECIES,IDXFILE,OUTFOLD,DEPTH_SIM,DEPTH_REAL,minLength=1e5,M=5) {
+  filenames <- scan(IDXFILE,what="sUp")
+  ## read.files
+  r <- lapply(filenames, read.table,colClasses=c("character","integer","integer","integer"))
+  names(r) <- basename(filenames)
+  ## filter and normalized
+  rFilt <- filterScaffold(r,DEPTH_SIM,DEPTH_REAL,minLength=1e5,M=5)
+  cat("DEPTH REAL :",DEPTH_REAL,"\n")
+  cat("DEPTH SIMULATION :",DEPTH_SIM,"\n")
+  ## identify sex
+  sex <- sexDetermine(rFilt)
+  return(sex)
 }
