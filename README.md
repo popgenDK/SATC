@@ -79,7 +79,7 @@ plotScafs(data,ab=T)
 
 Below is an example of performing SATC on our leopard data:
 ```bash
-Rscript --vanilla satc.R leo examples/leo_idxstats_path.txt .
+Rscript --vanilla satc.R -i examples/leo_idxstats_path.txt -o leo
 ```
 
 ```R
