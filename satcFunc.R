@@ -49,9 +49,8 @@ readArgs <- function(args){
     }
 
     if(is.null(pars$infile) | is.null(pars$outprefix)){
-        cat("Missing required argument, see help:\n")
         printHelp()
-        stop()
+        stop("Missing requried argument, see help above.")
     }
     
     return(pars)
