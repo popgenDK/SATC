@@ -1,10 +1,64 @@
 #!/usr/bin/env R
 col12<-c("#FFB7FC","#ef8a62","#fddbc7","#d1e5f0","#FF106A","#FFB7FC")[c(1,5)]
 
-if (!require(mclust)) install.packages('mclust',repos='http://cran.us.r-project.org')
-library(mclust)  
 
-filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds,range=c(0.3,2),useMedian=FALSE){
+printHelp <- function(){
+
+    cat("\tRequired arguments:\n\n
+\t\t-i --input:\t  path to file with paths to idxstat files\n
+\t\t-o --output:\t prefix for output files\n\n
+\tOptional arguments:\n\n
+\t\t--weight:\t Use weighted pca (default TRUE)\n
+\t\t--K:\t Number of principal components used for clustering (default 2)\n
+\t\t--model:\t Use gaussian clustering \"gaussian\" or hierarchical clustering \"hclust\" (default \"gaussian\")\n
+\t\t--minLength:\t Minimum length of scaffolds to include, in bp (default 1e5)\n
+\t\t--M:\t Number of scaffolds used for normalization (default 5)\n
+\t\t--normScaffolds:\t Path to file with list of scaffolds to use for normalization; overwrites M (defualt NULL)\n
+\t\t--useMedian:\t Use median depth of coverage of selected scaffolds for normalization instead of mean (default FALSE)\n
+\t\t-h:\t print help and exit\n
+")
+
+}
+
+readArgs <- function(args){
+    
+    pars <- list(infile = NULL, outprefix = NULL,
+                 weight=TRUE, K=2, model="gaussian", minLength=1e5,
+                 M=5, normScaffolds=NULL, useMedian=FALSE
+                 )
+    
+    for(i in seq(1, length(args), 2)){
+        
+        if(args[i]=="-i" | args[i]=="--input"){ pars$infile <- args[i+1]
+        } else if(args[i]=="-o"| args[i] == "--output"){ pars$outprefix <- args[i+1]
+        } else if(args[i]=="--weight"){ pars$weight <- as.logical(args[i+1])
+        } else if(args[i]=="--K"){ pars$K <- as.integer(args[i+1])
+        } else if(args[i]=="--model"){ pars$model <- args[i+1]
+        } else if(args[i] == "--minLength"){ pars$minLength <- as.numeric(args[i+1])
+        } else if(args[i] == "--M"){ pars$M <- as.integer(args[i+1])
+        } else if(args[i] == "--normScaffolds"){ pars$normScaffolds <- args[i+1]
+        } else if(args[i] == "--useMedian"){ pars$useMedian <- as.logical(args[i+1])
+        } else if(args[i] == "-h"){
+            printHelp()
+            stop("Printed help and exited due to -h flag, not really an error.")
+        } else {
+            printHelp()
+            stop("Unkonwn argument ", args[i], ", see above accepted arguments.\n")
+        }
+
+    }
+
+    if(is.null(pars$infile) | is.null(pars$outprefix)){
+        cat("Missing required argument, see help:\n")
+        printHelp()
+        stop()
+    }
+    
+    return(pars)
+}
+
+
+filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.3,2),useMedian=FALSE){
     #order of size of scaffold
     ord <- order(dat[[1]]$V2,decreasing=T)
 
@@ -18,9 +72,10 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds,range=c(0.3,2),us
     filtered <- lapply(dat,fun)
 
     ## scaffolds use for normalization
-    if(!missing(normScaffolds)){
+    if(!is.null(normScaffolds)){
+        normScaffolds <- scan(normScaffolds, what="d")
         if(!all(normScaffolds%in%filtered[[1]]$scaffolds))
-            warnings("Chosen normalizing scaffold not found (efter min length filtering)")
+            warnings("Chosen normalizing scaffold not found (after min length filtering)")
         normScarfs <- filtered[[1]]$scaffolds%in%normScaffolds
     }
     else
@@ -36,7 +91,7 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds,range=c(0.3,2),us
             x$norm <- x$Nreads/x$Length/denom
             cov <- x$Nreads[normScarfs]/x$Length[normScarfs]/denom 
             if(diff(range(cov)) > 0.3){
-                warning("large difference in covarage of the scaffolds used for normalization. Consider using the median instead (useMedian=TRUE) or manually choose scaffolds")
+                warning("large difference in covarage of the scaffolds used for normalization. Consider using the median instead (--useMedian TRUE) or manually choose scaffolds (--normScaffolds)")
             print(x[normScarfs,])
               }
         }
@@ -124,7 +179,7 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
     XZScaf <- x$SexScaffolds$X_Z_Scaffolds
     
     keep <- x$dat[[1]][,1][XZScaf]
-    if(abnormal)
+     if(abnormal)
       keep<- x$dat[[1]][,1][sexLinkedScaf]
     
     mat <- mat[keep,]
@@ -154,16 +209,19 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
 
 
 
-satc <- function(SPECIES,IDXFILE,OUTFOLD,minLength=1e5,M=5) { 
+satc <- function(SPECIES,IDXFILE,OUTFOLD,minLength=1e5,M=5, weight=TRUE, K=2, model="gaussian", normScaffolds=NULL, useMedian=FALSE){ 
+
     filenames <- scan(IDXFILE,what="sUp") 
     ## read.files
+
+
     r <- lapply(filenames, read.table,colClasses=c("character","integer","integer","integer")) 
+
     names(r) <- basename(filenames)
     ## filter and normalized
-    rFilt <- filterScaffold(r,minLength=1e5,M=5)
+    rFilt <- filterScaffold(dat=r,minLength=minLength,M=M,normScaffolds=normScaffolds, useMedian=useMedian)
     ## identify sex
-		sex <- sexDetermine(rFilt) 
+    sex <- sexDetermine(dat=rFilt, K=K, weight=weight, model=model) 
+
     return(sex)
-    
-    
 }

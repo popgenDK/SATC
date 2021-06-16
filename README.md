@@ -24,7 +24,37 @@ The required R package (mclust) can be easily installed, we have already include
 
 SATC is run by executing the main function file satc.R:
 ```bash
-Rscript --vanilla satc.R <prefix> <idxfile> <output folder path>
+Rscript --vanilla satc.R -i <idxfiles list> -o <prefix for output files>
+```
+
+All arguments and options are:
+```
+	Required arguments:
+
+
+		-i --input:	  path to file with paths to idxstat files
+
+		-o --output:	 prefix for output files
+
+
+	Optional arguments:
+
+
+		--weight:	 Use weighted pca (default TRUE)
+
+		--K:	 Number of principal components used for clustering (default 2)
+
+		--model:	 Use gaussian clustering "gaussian" or hierarchical clustering "hclust" (default "gaussian")
+
+		--minLength:	 Minimum length of scaffolds to include, in bp (default 1e5)
+
+		--M:	 Number of scaffolds used for normalization (default 5)
+
+		--normScaffolds:	 Path to file with list of scaffolds to use for normalization; overwrites M (defualt NULL)
+
+		--useMedian:	 Use median depth of coverage of selected scaffolds for normalization instead of mean (default FALSE)
+
+		-h:	 print help and exit
 ```
 
 SATC will output three text files: a list of the inferred sex for each sample, a list with all sex linked scaffolds and another list with all sex linked scaffolds with depth difference consistent with being XZ chrosomome. It also produces two plots, and an R data object in (.rds) format conaining an R list with the data produced by SATC. To read the .rds file in R and extract the data and plots:

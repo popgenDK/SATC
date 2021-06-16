@@ -1,27 +1,48 @@
 #!/usr/bin/env Rscript
-args = commandArgs(trailingOnly=TRUE) 
-col12<-c("#FFB7FC","#ef8a62","#fddbc7","#d1e5f0","#FF106A","#FFB7FC")[c(1,5)]
 
-if (length(args)<2) {
-  stop("At least two arguments must be supplied (prefix, input_folder)", call.=FALSE)
-} else if (length(args)==2) {
-  # default output file
-  args[3] = "."
+    cat("\nSex Assignment Trough Coverage (SATC):\nprogram to jointly identify sex linked scaffolds and infer individuals sex based on depht of coverage of NGS data.\n\n")
+
+whereDir <- function(){
+    # function to get directory where scripts are, so satcFunc.R can be sourced when run from any folderfrom outside
+    # made by krishang
+    cmdArgs <- commandArgs(trailingOnly = FALSE)
+    needle <- "--file"
+    match <- grep(needle, cmdArgs)
+    tf <- unlist(strsplit(cmdArgs[match], "="))[2]
+    d <- dirname(tf)
+    return(d)
 }
 
 
 
-SPECIES=args[1] 
-IDXFILE=args[2] 
-OUTFOLD=args[3] 
-cat("output prefix\t:",SPECIES,"\ninput file list\t:",IDXFILE,"\noutput folder\t: ",OUTFOLD,"\n")
-
-
-source("satcFunc.R")
+d <- whereDir()
+source(paste(d, "satcFunc.R", sep="/"))
 
 
 
-sex <- satc(SPECIES,IDXFILE,OUTFOLD)
+
+args <- commandArgs(trailingOnly=TRUE)
+col12 <- c("#FFB7FC","#ef8a62","#fddbc7","#d1e5f0","#FF106A","#FFB7FC")[c(1,5)]
+
+pars <- readArgs(args)
+
+cat("Running SATC with following parameters:\n
+\tinfile:", pars$infile,"\n\toutprefix:", pars$outprefix,
+"\n\tweight:", pars$weight, "\n\tK:", pars$K, "\n\tmodel:", pars$model,
+"\n\tminLength:", pars$minLength, "\n\tM:", pars$M,
+"\n\tnormScaffolds:", pars$normScaffolds, "\n\tuseMedian:", pars$useMedian, "\n\n")
+
+SPECIES <- basename(pars$outprefix)
+OUTFOLD <- dirname(pars$outprefix)
+IDXFILE <- pars$infile
+
+# load mclust only when need gaussian clustering
+if(pars$model == "gaussian"){
+    if (!require(mclust)) install.packages('mclust',repos='http://cran.us.r-project.org')
+    library(mclust)  
+}
+
+sex <- satc(SPECIES,IDXFILE,OUTFOLD, minLength=pars$minLength, M=pars$M, weight=pars$weight, K=pars$K, model=pars$model, normScaffolds=pars$normScaffolds, useMedian=pars$useMedian)
 
 
 cat("\nFinished all analyses\n\n")
@@ -34,10 +55,10 @@ sexlist <- paste0(OUTFOLD,"/",SPECIES,"_sampleSex.tsv")
 outlist1 <- paste0(OUTFOLD,"/",SPECIES,"_sexlinked_scaff.list")
 outlist2 <- paste0(OUTFOLD,"/",SPECIES,"_XZ_scaff.list")
 
-ylim<-c(0,2) 
-bitmap(outpng1,w=12,h=6,res = 300) 
+ylim<-c(0,2)
+bitmap(outpng1,w=12,h=6,res = 300)
 par(mar=c(2,2,2,0))
-plotDepth(sex,ylim=ylim) 
+plotDepth(sex,ylim=ylim)
 invisible(dev.off())
 
 
