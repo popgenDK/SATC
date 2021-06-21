@@ -32,29 +32,29 @@ All arguments and options are:
 	Required arguments:
 
 
-		-i --input:	  path to file with paths to idxstat files
+		-i --input:  Path to file with paths to idxstat files
 
-		-o --output:	 prefix for output files
+		-o --output:  Prefix for output files
 
 
 	Optional arguments:
 
 
-		--weight:	 Use weighted pca (default TRUE)
+		--weight:  Use weighted pca (default TRUE)
 
-		--K:	 Number of principal components used for clustering (default 2)
+		--K:  Number of principal components used for clustering (default 2)
 
-		--model:	 Use gaussian clustering "gaussian" or hierarchical clustering "hclust" (default "gaussian")
+		--model:  Use gaussian clustering "gaussian" or hierarchical clustering "hclust" (default "gaussian")
 
-		--minLength:	 Minimum length of scaffolds to include, in bp (default 1e5)
+		--minLength:  Minimum length of scaffolds to include, in bp (default 1e5)
 
-		--M:	 Number of scaffolds used for normalization (default 5)
+		--M:  Number of scaffolds used for normalization (default 5)
 
-		--normScaffolds:	 Path to file with list of scaffolds to use for normalization; overwrites M (defualt NULL)
+		--normScaffolds:  Path to file with list of scaffolds to use for normalization; overwrites M (defualt NULL)
 
-		--useMedian:	 Use median depth of coverage of selected scaffolds for normalization instead of mean (default FALSE)
+		--useMedian:  Use median depth of coverage of selected scaffolds for normalization instead of mean (default FALSE)
 
-		-h:	 print help and exit
+		-h:  Print help and exit
 ```
 
 SATC will output three text files: a list of the inferred sex for each sample, a list with all sex linked scaffolds and another list with all sex linked scaffolds with depth difference consistent with being XZ chrosomome. It also produces two plots, and an R data object in (.rds) format conaining an R list with the data produced by SATC. To read the .rds file in R and extract the data and plots:
@@ -75,6 +75,21 @@ plotScafs(data)
 #To get boxplots of Sex-linked Scaffolds grouped by sex
 plotScafs(data,ab=T)
 ```
+
+SATC can also run fully in R. 
+
+```
+source("https://raw.githubusercontent.com/popgenDK/SATC/main/satcFunc.R")
+
+IDXFILE <- "path to your idxfile"
+filenames <- scan(IDXFILE,what="sUp")
+idx <- lapply(filenames,read.table,as.is=T)
+filt <- filterScaffold(idx)
+sex<-sexDetermine(filt)
+plotGroup(sex)
+plotScafs(sex)
+```
+
 ## Example Usage
 
 Below is an example of performing SATC on our leopard data:
