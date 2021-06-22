@@ -207,7 +207,7 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
 } 
 
  plotSamples <- function(x,ylim=c(0,2),abnormal=TRUE,main=""){
-     par(mar=c(10.1,4.1,3.1,2.1))
+     par(mar=c(8.1,4.1,3.1,2.1))
      mat <- sapply(x$dat,function(y) y$norm)
      scafNames <-x$dat[[1]][,1]
      indNames<- names(x$dat)
