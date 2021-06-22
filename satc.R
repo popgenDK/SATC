@@ -49,6 +49,7 @@ cat("\nFinished all analyses\n\n")
 
 outpng1 <- paste0(OUTFOLD,"/",SPECIES,"_depth.png")
 outpng2 <- paste0(OUTFOLD,"/",SPECIES,"_PCA_and_boxplot.png")
+outpng3 <- paste0(OUTFOLD,"/",SPECIES,"_PCAuncertainty_and_BoxplotPerSample.png")
 
 sexlist <- paste0(OUTFOLD,"/",SPECIES,"_sampleSex.tsv")
 
@@ -69,20 +70,27 @@ plotGroup(sex,main=SPECIES)
 plotScafs(sex,ylim=ylim,ab=T)
 invisible(dev.off())
 
+bitmap(outpng3,w=12,h=4,res = 300) 
+layout(matrix(1:2,1,by=T),w=c(1.2,3.8))
+par(mar=c(2,2,2,0)) 
+plotUnc(sex,main=SPECIES) 
+plotSamples(sex,ylim=ylim,abnormal=TRUE)
+invisible(dev.off())
 
-cat("Plots saved in", outpng1, "and", outpng2, "\n\n")
+
+cat("Plots saved in", outpng1, outpng2, "and", outpng3, "\n\n")
 
 write.table(cbind(names(sex$dat), sex$sex), sexlist, quote=F, row.names=F, col.names=c("sample", "inferred_sex"), sep="\t")
 
 cat("Inferred sex for each sample written to", sexlist, "\n\n")
 
-sexlinked <- sex$SexScaffolds$Name[sex$SexScaffolds$Sex_linked_Scaffolds]
+abnormalsexlinked <- sex$SexScaffolds$Name[sex$SexScaffolds$Abnormal_sex_linked_Scaffold]
 xz <- sex$SexScaffolds$Name[sex$SexScaffolds$X_Z_Scaffolds]
 
-write(sexlinked, outlist1)
+write(abnormalsexlinked, outlist1)
 write(xz, outlist2)
 
-cat("List of sex linked scaffolds written to", outlist1, "\n")
+cat("List of abnormal sex linked scaffolds written to", outlist1, "\n")
 cat("List of XZ scaffolds written to", outlist2, "\n\n")
 cat("All scaffolds in", outlist2,"are also in", outlist1, "\n\n")
 cat("We recommend excluding scaffolds in", outlist1, "from any analyses that should focus on autosomes.\nIf you want to do analyses in sexual chromosomes we recommend to use only scaffolds in", outlist2, "which seem well behaved regarding ploidy difference between sexes\n\n")
