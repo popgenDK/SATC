@@ -80,14 +80,18 @@ SATC can also run fully in R.
 
 ```
 source("https://raw.githubusercontent.com/popgenDK/SATC/main/satcFunc.R")
-
+library(mclust)
 IDXFILE <- "path to your idxfile"
 filenames <- scan(IDXFILE,what="sUp")
 idx <- lapply(filenames,read.table,as.is=T)
-filt <- filterScaffold(idx)
-sex<-sexDetermine(filt)
+names(idx) <- basename(filenames)
+rFilt <- filterScaffold(dat=idx,minLength=1e5,M=5,normScaffolds=NULL, useMedian=)
+## identify sex
+sex <- sexDetermine(dat=rFilt, K=2, weight=TRUE, model="gaussian") 
 plotGroup(sex)
 plotScafs(sex)
+plotSamples(sex)
+plotUnc(sex)
 ```
 
 ## Example Usage
