@@ -206,7 +206,42 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
   			abline(h = 1, col="#20A387FF", lwd=1, lty=2)
 } 
 
+ plotSamples <- function(x,ylim=c(0,2),abnormal=TRUE,main=""){
+     par(mar=c(10.1,4.1,3.1,2.1))
+     mat <- sapply(x$dat,function(y) y$norm)
+     scafNames <-x$dat[[1]][,1]
+     indNames<- names(x$dat)
+     rownames(mat) <- scafNames
+     colnames(mat)<- indNames
+     sexLinkedScaf <- scafNames[x$SexScaffolds$Abnormal_sex_linked_Scaffold | x$SexScaffolds$X_Z_Scaffolds]
+     XZScaf <- scafNames[x$SexScaffolds$X_Z_Scaffolds]
+     keep <-XZScaf
+     if(abnormal)
+     keep <-sexLinkedScaf
+     newOrder <- order(x$sex,decreasing=TRUE)
+     matOrder<- mat[keep,newOrder]
+     namOrder <- gsub(".idxstat|.idxstats","",colnames(matOrder))
+     s <- factor(rep(namOrder,each=nrow(matOrder)),levels=namOrder)
+     n<-length(namOrder)
+     b<-boxplot(as.vector(matOrder)~s,
+             col=col12[as.factor(x$sex)[newOrder]]
+             ,ylab="Normalized
+             Depth",
+             axes=F,xlab="",ylim=ylim)
+     axis(2,cex.axis=1.05,ylim=ylim)
+     text(1:n,y=rep(-0.1,n),namOrder,xpd=T,srt=90,cex=0.7)
+     title(main,adj=0.2,cex.main=1.5)
+     gen <- c("Heterogametic ","Homogametic ")
+     abline(h=0.5,lty=2,lwd=1.5,xlim=c(0,n),col=col12[1])
+     abline(h=1,lty=2,lwd=1.5,xlim=c(0,n),col=col12[2])
+     abline(v=sum(x$sex=="homomorphic")+0.5,lty=1,lwd=1.5,ylim=c(0,2))
+     legend("topright",gen,pch=16,cex=1,col=col12,bty="n",horiz=T,xpd=T)
+ }
 
+ plotUnc<-function(x,main=""){
+     mod<-Mclust(x$pca$x[,1:2],G=2)
+     plot(mod,what = "unc")
+   }
 
 satc <- function(SPECIES,IDXFILE,OUTFOLD,minLength=1e5,M=5, weight=TRUE, K=2, model="gaussian", normScaffolds=NULL, useMedian=FALSE){ 
 
