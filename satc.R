@@ -70,11 +70,12 @@ plotGroup(sex,main=SPECIES)
 plotScafs(sex,ylim=ylim,ab=T)
 invisible(dev.off())
 
-bitmap(outpng3,w=12,h=4,res = 300) 
+#bitmap(outpng3,w=12,h=4,res = 300) 
 layout(matrix(1:2,1,by=T),w=c(1.2,3.8))
 par(mar=c(2,2,2,0)) 
 plotUnc(sex,main=SPECIES) 
 plotSamples(sex,ylim=ylim,abnormal=TRUE)
+dv<-dev.copy(png,outpng3,bg="transparent")
 invisible(dev.off())
 
 
