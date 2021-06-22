@@ -240,7 +240,7 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
 
  plotUnc<-function(x,main=""){
      mod<-Mclust(x$pca$x[,1:2],G=2)
-     plot(mod,what = "unc")
+     suppressWarnings(plot(mod,what = "unc",bg="transparent"))
    }
 
 satc <- function(SPECIES,IDXFILE,OUTFOLD,minLength=1e5,M=5, weight=TRUE, K=2, model="gaussian", normScaffolds=NULL, useMedian=FALSE){ 
