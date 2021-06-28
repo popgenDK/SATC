@@ -81,9 +81,11 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.
         normScarfs <- rank(-filtered[[1]]$Length)%in%1:M
     
     norma <- function(x){
+         x$normScafs <- normScarfs
         if(useMedian){
             denom <- median(x$Nreads[normScarfs]/x$Length[normScarfs])
             x$norm <- x$Nreads/x$Length/denom
+           
             }
         else{
             denom <- sum(x$Nreads[normScarfs])/sum(x$Length[normScarfs])
@@ -102,8 +104,15 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.
     lapply(normed,function(x) x[keep,])
 }
 
-plotDepth <- function(dat,ylim,col=1:length(dat),...){
-    dat<-dat$dat
+               
+               
+plotDepth <- function(dat,normOnly=FALSE,ylim,col,...){
+    if(length(dat)<5)
+        dat<-dat$dat
+    if(missing(col))
+        col=1:length(dat)
+    if(normOnly)
+        dat <- lapply(dat,function(x) x[x$normScafs,])
     scafLen <- dat[[1]][,2]
     mmax <- mmax <- max(sapply(dat,function(x) max(x[,"norm"])))
     if(missing(ylim))
