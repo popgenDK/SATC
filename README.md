@@ -25,18 +25,38 @@ source("https://raw.githubusercontent.com/popgenDK/SATC/main/satcFunc.R")
 ## use the mclust library. Install if needed (install.package("mclust"))
 library(mclust)
 
-## 
-IDXFILE <- "path to your idxfile"
+## read list of filenames
+IDXFILE <- "https://raw.githubusercontent.com/popgenDK/SATC/main/examples/gitpathLeopard.txt"
 filenames <- scan(IDXFILE,what="sUp")
+
+## read idx files
 idx <- lapply(filenames,read.table,as.is=T)
 names(idx) <- basename(filenames)
-rFilt <- filterScaffold(dat=idx,minLength=1e5,M=5,normScaffolds=NULL, useMedian=)
-## identify sex
+
+## Filter scafoolds (min 100kb ) and normalize using the M longest scaffold
+rFilt <- filterScaffold(dat=idx,minLength=1e5,M=5)
+
+
+## identify sex and sex scaffolds
 sex <- sexDetermine(dat=rFilt, K=2, weight=TRUE, model="gaussian") 
+
+## plot the clustering
 plotGroup(sex)
-plotScafs(sex)
+
+## plot the scaffolds depths stratificed by inferred sex including the (abnormal) scaffolds
+plotScafs(sex,abnormal=T)
+
+## plot the sex scaffolds' normalized depth for each individuals
 plotSamples(sex)
+
+## visialized the gausian mixtures
 plotUnc(sex)
+
+## See the inferred status of each scaffold
+ head(sex$SexScaffolds)
+ 
+## See the inferred sex of each indiviual
+head(cbind(names(idx),sex$sex))
 ```
 
 
