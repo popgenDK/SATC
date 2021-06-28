@@ -33,9 +33,8 @@ filenames <- scan(IDXFILE,what="sUp")
 idx <- lapply(filenames,read.table,as.is=T)
 names(idx) <- basename(filenames)
 
-## Filter scafoolds (min 100kb ) and normalize using the M longest scaffold
+## Filter scafoolds (min 100kb ) and normalize using the M longest scaffold 
 rFilt <- filterScaffold(dat=idx,minLength=1e5,M=5)
-
 
 ## identify sex and sex scaffolds
 sex <- sexDetermine(dat=rFilt, K=2, weight=TRUE, model="gaussian") 
