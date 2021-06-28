@@ -11,7 +11,37 @@ SATC works following these steps:
 4. Identifying the sample sex and sex-linked scaffolds from the clustering and the DoC. 
 
 
-## Get SATC
+
+
+# Using SATC
+SATC is just a set of R functions. You can use SATC in R or run from the command line. 
+
+
+## Running in R
+```
+## source the R functions 
+source("https://raw.githubusercontent.com/popgenDK/SATC/main/satcFunc.R")
+
+## use the mclust library. Install if needed (install.package("mclust"))
+library(mclust)
+
+## 
+IDXFILE <- "path to your idxfile"
+filenames <- scan(IDXFILE,what="sUp")
+idx <- lapply(filenames,read.table,as.is=T)
+names(idx) <- basename(filenames)
+rFilt <- filterScaffold(dat=idx,minLength=1e5,M=5,normScaffolds=NULL, useMedian=)
+## identify sex
+sex <- sexDetermine(dat=rFilt, K=2, weight=TRUE, model="gaussian") 
+plotGroup(sex)
+plotScafs(sex)
+plotSamples(sex)
+plotUnc(sex)
+```
+
+
+## Run from the terminal
+### Get SATC R code and example files
 ```bash
 git clone https://github.com/popgenDK/SATC
 cd SATC/
@@ -78,21 +108,7 @@ plotScafs(data,ab=T)
 
 SATC can also run fully in R. 
 
-```
-source("https://raw.githubusercontent.com/popgenDK/SATC/main/satcFunc.R")
-library(mclust)
-IDXFILE <- "path to your idxfile"
-filenames <- scan(IDXFILE,what="sUp")
-idx <- lapply(filenames,read.table,as.is=T)
-names(idx) <- basename(filenames)
-rFilt <- filterScaffold(dat=idx,minLength=1e5,M=5,normScaffolds=NULL, useMedian=)
-## identify sex
-sex <- sexDetermine(dat=rFilt, K=2, weight=TRUE, model="gaussian") 
-plotGroup(sex)
-plotScafs(sex)
-plotSamples(sex)
-plotUnc(sex)
-```
+
 
 ## Example Usage
 
