@@ -36,6 +36,10 @@ names(idx) <- basename(filenames)
 ## Filter scafoolds (min 100kb ) and normalize using the M longest scaffold 
 rFilt <- filterScaffold(dat=idx,minLength=1e5,M=5)
 
+##plot normalized depth
+plotDepth(rFilt) ##all scaffs
+plotDepth(rFilt,normOnly=TRUE) ##scaffs used for normalization (look for outliners)
+
 ## identify sex and sex scaffolds
 sex <- sexDetermine(dat=rFilt, K=2, weight=TRUE, model="gaussian") 
 
