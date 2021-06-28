@@ -11,7 +11,9 @@ SATC works following these steps:
 4. Identifying the sample sex and sex-linked scaffolds from the clustering and the DoC. 
 
 
-
+<p align="center" width="100%">
+    <img width="100%" src="https://github.com/popgenDK/SATC/blob/9c6724e6ca4f0357d0891166d4b1008ea6720819/examples/plots/leo_PCA_and_boxplot.png">
+</p>
 
 # Using SATC
 SATC is just a set of R functions. You can use SATC in R or run from the command line. 
