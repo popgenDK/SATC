@@ -107,7 +107,7 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.
                
                
 plotDepth <- function(dat,normOnly=FALSE,ylim,col,...){
-    if(length(dat)<5)
+    if(length(dat)<6)
         dat<-dat$dat
     if(missing(col))
         col=1:length(dat)
