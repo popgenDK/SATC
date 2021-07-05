@@ -72,8 +72,8 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.
 
     ## scaffolds use for normalization
     if(!is.null(normScaffolds)){
-        normScaffolds <- scan(normScaffolds, what="d")
-        if(!all(normScaffolds%in%filtered[[1]]$scaffolds))
+      #  normScaffolds <- scan(normScaffolds, what="d")
+        if(!all(normScaffolds%in%filtered[[1]][,1]))
             warnings("Chosen normalizing scaffold not found (after min length filtering)")
         normScarfs <- filtered[[1]]$scaffold%in%normScaffolds
     }
