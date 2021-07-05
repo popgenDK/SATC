@@ -111,8 +111,11 @@ plotDepth <- function(dat,normOnly=FALSE,ylim,col,...){
         dat<-dat$dat
     if(missing(col))
         col=1:length(dat)
-    if(normOnly)
+    if(normOnly){
         dat <- lapply(dat,function(x) x[x$normScafs,])
+       if(missing(ylim))
+           ylim<-range(sapply(dat,function(x) x$norm))
+    }
     scafLen <- dat[[1]][,2]
     mmax <- mmax <- max(sapply(dat,function(x) max(x[,"norm"])))
     if(missing(ylim))
