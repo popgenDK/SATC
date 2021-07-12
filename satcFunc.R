@@ -186,17 +186,18 @@ plotGroup <- function(x,main=""){
 plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
     par(mar=c(4.1,4.1,3.1,2.1))
     mat <- sapply(x$dat,function(y) y$norm)
-    rownames(mat) <- x$dat[[1]][,1]
+    rownames(mat) <- as.character(x$dat[[1]][,1])
     sexLinkedScaf <- x$SexScaffolds$Abnormal_sex_linked_Scaffolds|x$SexScaffolds$X_Z_Scaffolds
     XZScaf <- x$SexScaffolds$X_Z_Scaffolds
     
-    keep <- x$dat[[1]][,1][XZScaf]
+    keep <- as.character(x$dat[[1]][,1][XZScaf])
      if(abnormal)
-      keep<- x$dat[[1]][,1][sexLinkedScaf]
+      keep<- as.character(x$dat[[1]][,1][sexLinkedScaf])
     
     mat <- mat[keep,]
-    nam <- gsub("NW_0176|NW_0050","",rownames(mat))
-  
+    #nam <- gsub("NW_0176|NW_0050","",rownames(mat))
+    nam <- rownames(mat)
+
     n<- ncol(mat)
     m<-nrow(mat)
     s <- factor(rep(nam,each=n),levels=nam)
@@ -217,17 +218,19 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
     legend(2.5*m*0.5,1.1*max(ylim)*1,gen,pch=16,cex=1,col=col12,bty="n",horiz=T,xpd=T)
     abline(h = 0.5, col="#20A387FF", lwd=1, lty=2)
   			abline(h = 1, col="#20A387FF", lwd=1, lty=2)
-} 
+}
 
- plotSamples <- function(x,ylim=c(0,2),abnormal=TRUE,main=""){
+
+
+plotSamples <- function(x,ylim=c(0,2),abnormal=TRUE,main=""){
      par(mar=c(8.1,4.1,3.1,2.1))
      mat <- sapply(x$dat,function(y) y$norm)
-     scafNames <-x$dat[[1]][,1]
+     scafNames <- as.character(x$dat[[1]][,1])
      indNames<- names(x$dat)
      rownames(mat) <- scafNames
      colnames(mat)<- indNames
-     sexLinkedScaf <- scafNames[x$SexScaffolds$Abnormal_sex_linked_Scaffold | x$SexScaffolds$X_Z_Scaffolds]
-     XZScaf <- scafNames[x$SexScaffolds$X_Z_Scaffolds]
+     sexLinkedScaf <- as.character(scafNames[x$SexScaffolds$Abnormal_sex_linked_Scaffold | x$SexScaffolds$X_Z_Scaffolds])
+     XZScaf <- as.character(scafNames[x$SexScaffolds$X_Z_Scaffolds])
      keep <-XZScaf
      if(abnormal)
      keep <-sexLinkedScaf
