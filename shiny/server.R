@@ -1,7 +1,11 @@
 
+
+library(mclust,lib.loc="/home/albrecht/R/x86_64-pc-linux-gnu-library/3.2/")
+
 library(shiny)
 options(shiny.maxRequestSize=100*1024^2) # set limit to upload file to 100 Mb (default is 5 MB)
 source("https://raw.githubusercontent.com/popgenDK/SATC/main/satcFunc.R")
+
 
 error <- function(txt)
     validate(  need(FALSE, txt)  ) 
@@ -10,8 +14,8 @@ shinyServer(function(input, output) {
 
     output$chooseInd = renderUI( {
         idx <- loadData()
-        selectInput( "ind", label = 'choose indvidauls ',
-                 as.list( names(idx) ), multiple = TRUE,  selectize = TRUE,
+        selectInput( "ind", label = 'Choose indvidauls ',
+                 as.list( names(idx) ), multiple = TRUE,  selectize = FALSE,
                  selected = names(idx) )
     })
 
@@ -22,7 +26,7 @@ shinyServer(function(input, output) {
         scaf <-head( idx[[1]][ord,1],100)
         M <- input$M
         chose <- scaf[1:M]
-        selectInput( "scaf", label = 'choose normalizeing Scaffolds (max 100 largest shown)',
+        selectInput( "scaf", label = 'Choose normalizing scaffolds (max 100 largest shown)',
                     
                  as.list( scaf ), multiple = TRUE,  selectize = TRUE,
                  selected = chose )
@@ -43,11 +47,11 @@ shinyServer(function(input, output) {
         
       r<- lapply(3:ncol(a),function(x) data.frame(scaffolds=a$scaffold,V2=a$len,nreads=a[,x],rand=0,stringsAsFactors=F))
       
-     names(r) <- names(a)[-(1:2)] # at some point might be worth let user set sample ids by uploading file?
+     names(r) <- scan(f$datapath, nlines=1, what="da")[-(1:2)] # this avoids that numeric sample ID get X at beginning. at some point might be worth let user set sample ids by uploading file?
      return(r)
 
     })
-
+ 
 
     filt <- reactive({
         idx <- loadData()
@@ -115,6 +119,7 @@ output$tableInd <- renderDataTable( {
     output$sexScaffPlot <- renderPlot({
       req(sex())
       plotScafs(sex(),ylim=c(0,2),abnormal=T, main="Sex scaffolds normalized depths per sample")
+#plotScafs(sex(),ylim=c(0,2),abnormal=F, main="Sex scaffolds normalized depths per sample")
     })
     
   output$sampleScaffPlot <- renderPlot({
@@ -157,17 +162,18 @@ output$tableInd <- renderDataTable( {
         cat("
 #identify all of the idxstat file e.g. 
 FILES=`ls ~/github/SATC/examples/idx_leopard/*idxstats`
+F1=`ls ~/github/SATC/examples/idx_leopard/*idxstats | head -1`
 
 #name of output
 OUTFILE='tmp2.idxes'
 
 # add header to the file
 echo -e -n 'scaffold len ' > $OUTFILE 
-echo $FILES | xargs -n1 basename |  tr '\n' ' ' | sed 's/.idxstats//g' >> $OUTFILE
+echo $FILES | xargs -n1 basename |  tr '\\n' ' ' | sed 's/.idxstats//g' >> $OUTFILE
 echo >> $OUTFILE
 
 ## add the nreads per individual to the file
-paste <( cut -f1-2 /home/albrecht/github/SATC/examples/idx_leopard/5521.idxstats ) <(awk '{ a[FNR] = (a[FNR] ? a[FNR] FS : '') $3 } END { for(i=1;i<=FNR;i++) print a[i] }' $FILES) >> $OUTFILE
+paste <( cut -f1-2 $F1 ) <(awk '{ a[FNR] = (a[FNR] ? a[FNR] FS : \"\") $3 } END { for(i=1;i<=FNR;i++) print a[i] }' $FILES) >> $OUTFILE
       ")
         
     })
