@@ -1,7 +1,6 @@
 
 
 library(mclust,lib.loc="/home/albrecht/R/x86_64-pc-linux-gnu-library/3.2/")
-
 library(shiny)
 options(shiny.maxRequestSize=100*1024^2) # set limit to upload file to 100 Mb (default is 5 MB)
 source("https://raw.githubusercontent.com/popgenDK/SATC/main/satcFunc.R")
@@ -15,7 +14,7 @@ shinyServer(function(input, output) {
     output$chooseInd = renderUI( {
         idx <- loadData()
         selectInput( "ind", label = 'Choose indvidauls ',
-                 as.list( names(idx) ), multiple = TRUE,  selectize = FALSE,
+                 as.list( names(idx) ), multiple = TRUE,  selectize = TRUE,
                  selected = names(idx) )
     })
 
@@ -70,21 +69,21 @@ shinyServer(function(input, output) {
       # this must be all idxstats files will columns pasted one next to other, tab separated
       rFilt <- filt()
       model <- input$model
-      weight <- input$weight
+      weight <- T
       K <- input$K
     
 
    
-
+      withProgress(message="Running SATC...",{
 ## identify sex and sex scaffolds
       sex <- sexDetermine(dat=rFilt, K=K, weight=weight, model=model) 
-    
+      
       sex$rFilt <- rFilt
+      })
       
-      cat("will run satc\n")
-      
+      #save(sex, file="/pontusData/shiny/satcGenis.Rdata")
       return(sex)
-
+      
     })
      
     ###########################################################   
@@ -133,11 +132,12 @@ output$tableInd <- renderDataTable( {
     d
   })
   
-  output$sexScaff <- renderTable({
+  output$sexScaff <- renderDataTable({
       req(sex())
       df <- sex()$SexScaffolds
-      
-    d <- data.frame(`Sex Scaffolds` = df)
+     
+      d <- data.frame(`Sex Scaffolds` = df)
+      names(d) <- c("Scaffold", "Length", "X_Z", "Abnormal_sex_linked","pVal", "homogametic_median", "heterogametic_median")
     d
   })
   
