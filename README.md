@@ -99,8 +99,6 @@ All arguments and options are:
 	Optional arguments:
 
 
-		--weight:  Use weighted pca (default TRUE)
-
 		--K:  Number of principal components used for clustering (default 2)
 
 		--model:  Use gaussian clustering "gaussian" or hierarchical clustering "hclust" (default "gaussian")

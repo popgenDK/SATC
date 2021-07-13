@@ -8,7 +8,6 @@ printHelp <- function(){
 \t\t-i --input:\t  path to file with paths to idxstat files\n
 \t\t-o --output:\t prefix for output files\n\n
 \tOptional arguments:\n\n
-\t\t--weight:\t Use weighted pca (default TRUE)\n
 \t\t--K:\t Number of principal components used for clustering (default 2)\n
 \t\t--model:\t Use gaussian clustering \"gaussian\" or hierarchical clustering \"hclust\" (default \"gaussian\")\n
 \t\t--minLength:\t Minimum length of scaffolds to include, in bp (default 1e5)\n
@@ -31,7 +30,7 @@ readArgs <- function(args){
         
         if(args[i]=="-i" | args[i]=="--input"){ pars$infile <- args[i+1]
         } else if(args[i]=="-o"| args[i] == "--output"){ pars$outprefix <- args[i+1]
-        } else if(args[i]=="--weight"){ pars$weight <- as.logical(args[i+1])
+        #} else if(args[i]=="--weight"){ pars$weight <- as.logical(args[i+1])
         } else if(args[i]=="--K"){ pars$K <- as.integer(args[i+1])
         } else if(args[i]=="--model"){ pars$model <- args[i+1]
         } else if(args[i] == "--minLength"){ pars$minLength <- as.numeric(args[i+1])
@@ -191,8 +190,8 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
     XZScaf <- x$SexScaffolds$X_Z_Scaffolds
     
     keep <- as.character(x$dat[[1]][,1][XZScaf])
-     if(abnormal)
-      keep<- as.character(x$dat[[1]][,1][sexLinkedScaf])
+    if(abnormal)
+        keep<- c(keep, as.character(x$dat[[1]][,1][sexLinkedScaf & !XZScaf])) # this forces correct order in plot
     
     mat <- mat[keep,]
     #nam <- gsub("NW_0176|NW_0050","",rownames(mat))

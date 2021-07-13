@@ -28,7 +28,7 @@ pars <- readArgs(args)
 
 cat("Running SATC with following parameters:\n
 \tinfile:", pars$infile,"\n\toutprefix:", pars$outprefix,
-"\n\tweight:", pars$weight, "\n\tK:", pars$K, "\n\tmodel:", pars$model,
+"\n\tK:", pars$K, "\n\tmodel:", pars$model,
 "\n\tminLength:", pars$minLength, "\n\tM:", pars$M,
 "\n\tnormScaffolds:", pars$normScaffolds, "\n\tuseMedian:", pars$useMedian, "\n\n")
 
@@ -42,7 +42,8 @@ if(pars$model == "gaussian"){
     library(mclust)  
 }
 
-sex <- satc(SPECIES,IDXFILE,OUTFOLD, minLength=pars$minLength, M=pars$M, weight=pars$weight, K=pars$K, model=pars$model, normScaffolds=pars$normScaffolds, useMedian=pars$useMedian)
+sex <- satc(SPECIES,IDXFILE,OUTFOLD, minLength=pars$minLength, M=pars$M, weight=TRUE, # hard code bc FALSE doesn't work
+            K=pars$K, model=pars$model, normScaffolds=pars$normScaffolds, useMedian=pars$useMedian)
 
 
 cat("\nFinished all analyses\n\n")
