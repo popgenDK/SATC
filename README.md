@@ -16,12 +16,19 @@ SATC works following these steps:
 </p>
 
 # Using SATC
-SATC is just a set of R functions. You can use SATC in R or run from the command line. The depth of coverage information can quickly be calculated from index bam files e.g. 
+SATC is just a set of R functions. You can use SATC in R, in an interactive shiny app or run it from the command line. The depth of coverage information can quickly be calculated from index bam files e.g. 
 
 ```bash
 samtools idxstats myFile.bam > myFile.idxstats
 ```
 
+## Shiny app
+
+We have implemented SATC in a shiny app, where you can upload your data, interactively run the analyses and download the output:
+
+[Link to SATC shiny](http://popgen.dk:3838/genis/satc/)
+
+You can find more information on how to run SATC in shiny inside the app.
 
 ## Running in R
 ```
@@ -47,7 +54,7 @@ plotDepth(rFilt) ##all scaffs
 plotDepth(rFilt,normOnly=TRUE) ##scaffs used for normalization (look for outliners)
 
 ## identify sex and sex scaffolds
-sex <- sexDetermine(dat=rFilt, K=2, weight=TRUE, model="gaussian") 
+sex <- sexDetermine(dat=rFilt, K=2, model="gaussian") 
 
 ## plot the clustering
 plotGroup(sex)
@@ -114,45 +121,34 @@ All arguments and options are:
 		-h:  Print help and exit
 ```
 
-SATC will output three text files: a list of the inferred sex for each sample, a list with all sex linked scaffolds and another list with all sex linked scaffolds with depth difference consistent with being XZ chrosomome. It also produces two plots, and an R data object in (.rds) format conaining an R list with the data produced by SATC. To read the .rds file in R and extract the data and plots:
-```R
-data <-readRDS(file ="path to <prefix>.sexSample_sexScaffolds.rds") #reads SATC output
-sexSamples <- data$sex #inferred sex for samples
-X_Z_scaffolds <- data$SexScaffolds[data$SexScaffold$X_Z_Scaffolds,1] #get a vector of X_Z_scaffolds
-Sex_linked_Scaffolds <- data$SexScaffolds[data$SexScaffold$Sex_linked_Scaffolds,1] #get a vector of Sex_linked_Scaffolds
+The main output of SATC are two tables:
 
-#Plotting
-source("satcFun.R")
-#To get plot of normalized depth from all scaffolds and all samples
-plotDepth(data)
-#To get a PCA plot, different color suggest different sex
-plotGroup(data)
-#To get boxplots of X_Z Scaffolds grouped by sex
-plotScafs(data)
-#To get boxplots of Sex-linked Scaffolds grouped by sex
-plotScafs(data,ab=T)
-```
+- \*\_sampleSex.tsv: contains information on assigned sex for each sample and the normalized depths the inference is based on.
+- \*\_scaffSex.tsv: contains information for each scaffold whether it is inferred to be and XZ chromsome and/or sex linked scaffold, the p value measuring significance of the difference between the two inferred sexes, and the median normalized depth of the scaffold in each inferred sex.
 
-SATC can also run fully in R. 
+Furthermore, SATC also produces two plots in png format: 
+
+- \*\_depth.png: plot of normalized depths.
+- \*\_PCA_and_boxplot.png:  plots showing the PCA the sex assignment is based on and the distribution of normalized depths for each inferred sex of each sex linked scaffold).
+
+And two lists:
+
+- \*\_sexlinked_scaff.list: list with all sex linked scaffolds with depth difference consistent with being XZ chrosomome.
+- \*\_XZ_scaff.list: a list with all sex linked scaffolds.
+
+and
+
+- \*.sexSamples_sexScaffolds.rds: an R data object in (.rds) format conaining an R list with the data produced by SATC. 
 
 
 
-## Example Usage
+## Example Usage from command line
 
 Below is an example of performing SATC on our leopard data:
 ```bash
 Rscript --vanilla satc.R -i examples/leo_idxstats_path.txt -o leo
 ```
 
-```R
-data <-readRDS(file ="leo.sexSample_sexScaffolds.rds")
-
-#Plotting
-source("satcFun.R")
-plotDepth(data)
-plotGroup(data)
-plotScafs(data)
-```
 By running SATC, it will automatically produced two plots (normalized depth plot, PCA and Sex-linked Scaffolds) in png format.
 
 For example, here's a normalized depth plot of leopard dataset:
@@ -164,6 +160,8 @@ Also PCA plot and boxplot of Sex-linked Scaffolds:
 <p align="center" width="100%">
     <img width="100%" src="https://github.com/popgenDK/SATC/blob/9c6724e6ca4f0357d0891166d4b1008ea6720819/examples/plots/leo_PCA_and_boxplot.png">
 </p>
+
+SATC can also run fully in R (see example above in **Running in R**). 
 
 
 ## Citation
