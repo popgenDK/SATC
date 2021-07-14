@@ -20,6 +20,7 @@ shinyUI(fluidPage(
             helpText("After running SATC you can download the output:"),
             
             downloadButton("downloadSampleSexTable", "Table of assigned sex per sample"),
+            downloadButton("downloadScaffTable", "Table of depth and assigned sex per scaffold"),
             downloadButton("downloadSexScaff", "List of sex scaffolds"),
             downloadButton("downloadSexScaffAbnormal", "List of sex linked and abnormal scaffolds"),
             
@@ -47,7 +48,7 @@ shinyUI(fluidPage(
                 tabPanel("Individuals", h1("histogram of #reads"),  plotOutput("plotInd"),dataTableOutput("tableInd")),
                 tabPanel("Normalized depths plot", plotOutput("depthsPlot"), plotOutput("depthsPlotNorm", click="depth_norm_click")),
                 tabPanel("Sex assignment plots", h1("press Run SATC to update"), plotOutput("pcaPlot"), plotOutput("sexScaffPlot"), plotOutput("sampleScaffPlot")),
-                tabPanel("Sample sex table", h1("press Run SATC to update"), tableOutput("sampleSexTable")),
+                tabPanel("Sample sex table", h1("press Run SATC to update"), dataTableOutput("sampleSexTable")),
                 tabPanel("Sex scaffolds", h1("press Run SATC to update"),  dataTableOutput("sexScaff"))
          #   tabPanel("make input file", h1("how to make the input file"),  verbatimTextOutput("text")),
          #   tabPanel("Sex linked and abnormal scaffolds", tableOutput("sexScaffAbnormal")),

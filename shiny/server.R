@@ -126,9 +126,10 @@ output$tableInd <- renderDataTable( {
     plotSamples(sex(),ylim=c(0,2),abnormal=TRUE, main="Per sample normalized depths in sex linked scaffolds")
   })
     
-  output$sampleSexTable <- renderTable({
+  output$sampleSexTable <- renderDataTable({
     req(sex())
-    d <- data.frame(sample_id = names(sex()$dat), assigned_sex = sex()$sex)
+    d <- makeIndTable(sex())
+    #d <- data.frame(d)
     d
   })
   
@@ -140,13 +141,7 @@ output$tableInd <- renderDataTable( {
       names(d) <- c("Scaffold", "Length", "X_Z", "Abnormal_sex_linked","pVal", "homogametic_median", "heterogametic_median")
     d
   })
-  
-  output$sexScaffAbnormal <- renderTable({
-    req(sex())
-    d <- data.frame(`Sex Linked and Abnormal Scaffolds` = sex()$SexScaffolds$Name[sex()$SexScaffolds$Abnormal_sex_linked_Scaffold])
-    d
-  })
-  
+    
   output$depthsPlot <- renderPlot({
     rFilt <- filt()
     plotDepth(rFilt, main="All scaffolds that pass filters", ylim=c(0,2))
@@ -157,27 +152,6 @@ output$tableInd <- renderDataTable( {
     plotDepth(rFilt, main="Only normalizing scaffolds that pass filters", normOnly=TRUE)
   })
   
-    output$text <- renderPrint({
-
-        cat("
-#identify all of the idxstat file e.g. 
-FILES=`ls ~/github/SATC/examples/idx_leopard/*idxstats`
-F1=`ls ~/github/SATC/examples/idx_leopard/*idxstats | head -1`
-
-#name of output
-OUTFILE='tmp2.idxes'
-
-# add header to the file
-echo -e -n 'scaffold len ' > $OUTFILE 
-echo $FILES | xargs -n1 basename |  tr '\\n' ' ' | sed 's/.idxstats//g' >> $OUTFILE
-echo >> $OUTFILE
-
-## add the nreads per individual to the file
-paste <( cut -f1-2 $F1 ) <(awk '{ a[FNR] = (a[FNR] ? a[FNR] FS : \"\") $3 } END { for(i=1;i<=FNR;i++) print a[i] }' $FILES) >> $OUTFILE
-      ")
-        
-    })
-
   ###########################################################   
   #### things below are to download the output files
   ###########################################################   
@@ -185,15 +159,25 @@ paste <( cut -f1-2 $F1 ) <(awk '{ a[FNR] = (a[FNR] ? a[FNR] FS : \"\") $3 } END 
   output$downloadSampleSexTable <- downloadHandler(
     filename = function(){"sampleSexTable.tsv"}, 
     content = function(fname){
-      write.table(data.frame(sample_id = names(sex()$dat), assigned_sex = sex()$sex), fname, sep="\t", col.names=T, row.names=F,quote=F)
+        d <- makeIndTable(sex())
+        write.table(d, fname, sep="\t", col.names=T, row.names=F,quote=F)
     }
   )
 
-    
+
+  output$downloadScaffTable <- downloadHandler(
+       filename = function(){"sexScaffTable.tsv"}, 
+       content = function(fname){
+           d <- data.frame(sex()$SexScaffolds)
+           names(d) <- c("Scaffold", "Length", "X_Z", "Abnormal_sex_linked","pVal", "homogametic_median", "heterogametic_median")
+           write.table(d, fname, sep="\t", col.names=T, row.names=F,quote=F)
+    }
+  )
+
   output$downloadSexScaff <- downloadHandler(
     filename = function(){"sexScaff.txt"}, 
     content = function(fname){
-      write.table(data.frame(`Sex Scaffolds` = sex()$SexScaffolds$Name[sex()$SexScaffolds$X_Z_Scaffolds]), fname, sep="\t", col.names=F, row.names=F,quote=F)
+        write.table(data.frame(`Sex Scaffolds` = sex()$SexScaffolds$Name[sex()$SexScaffolds$X_Z_Scaffolds]), fname, sep="\t", col.names=F, row.names=F,quote=F)
     }
   )
   
