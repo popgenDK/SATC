@@ -274,3 +274,21 @@ satc <- function(SPECIES,IDXFILE,OUTFOLD,minLength=1e5,M=5, weight=TRUE, K=2, mo
 
     return(sex)
 }
+
+makeIndTable <- function(dat){
+
+    XZscaff <- dat$SexScaffolds$X_Z_Scaffolds
+    keepNorm <- dat$dat[[1]]$normScafs
+    d <- data.frame(Sample = names(sex$dat), Inferred_sex = sex$sex,
+                    Median_depth_sex_scaffolds = sapply(dat$dat, function(x) median(x$norm[XZscaff])),
+                    Nreads = sapply(dat$dat, function(x) sum(x$Nreads)),
+                    NreadsNormalizing = sapply(dat$dat, function(x) sum(x$Nreads[keepNorm])),
+                    minNormDepNormalizing = sapply(dat$dat, function(x) min(x$norm[keepNorm])),
+                    maxNormDepNormalizing = sapply(dat$dat, function(x) max(x$norm[keepNorm])))
+                    
+                                                  
+                    
+    return(d)
+
+    
+}

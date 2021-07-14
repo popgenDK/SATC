@@ -82,9 +82,11 @@ invisible(dev.off())
 
 cat("Plots saved in", outpng1, outpng2, "and", outpng3, "\n\n")
 
-write.table(cbind(names(sex$dat), sex$sex), sexlist, quote=F, row.names=F, col.names=c("sample", "inferred_sex"), sep="\t")
+sampleTable <- makeIndTable(sex)
 
-cat("Inferred sex for each sample written to", sexlist, "\n\n")
+write.table(sampleTable, sexlist, quote=F, row.names=F, col.names=TRUE, sep="\t")
+
+cat("Inferred sex for each sample and information on normalized depth written to", sexlist, "\n\n")
 
 abnormalsexlinked <- sex$SexScaffolds$Name[sex$SexScaffolds$Abnormal_sex_linked_Scaffold]
 xz <- sex$SexScaffolds$Name[sex$SexScaffolds$X_Z_Scaffolds]
