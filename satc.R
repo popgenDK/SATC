@@ -52,8 +52,8 @@ outpng1 <- paste0(OUTFOLD,"/",SPECIES,"_depth.png")
 outpng2 <- paste0(OUTFOLD,"/",SPECIES,"_PCA_and_boxplot.png")
 outpng3 <- paste0(OUTFOLD,"/",SPECIES,"_PCAuncertainty_and_BoxplotPerSample.png")
 
-sexlist <- paste0(OUTFOLD,"/",SPECIES,"_sampleSex.tsv")
-
+sexFile <- paste0(OUTFOLD,"/",SPECIES,"_sampleSex.tsv")
+scafFile <- paste0(OUTFOLD,"/",SPECIES,"_scaffSex.tsv")
 outlist1 <- paste0(OUTFOLD,"/",SPECIES,"_sexlinked_scaff.list")
 outlist2 <- paste0(OUTFOLD,"/",SPECIES,"_XZ_scaff.list")
 
@@ -84,9 +84,18 @@ cat("Plots saved in", outpng1, outpng2, "and", outpng3, "\n\n")
 
 sampleTable <- makeIndTable(sex)
 
-write.table(sampleTable, sexlist, quote=F, row.names=F, col.names=TRUE, sep="\t")
+write.table(sampleTable, sexFile, quote=F, row.names=F, col.names=TRUE, sep="\t")
 
-cat("Inferred sex for each sample and information on normalized depth written to", sexlist, "\n\n")
+scaffTable <- sex$SexScaffolds
+names(scaffTable) <- c("Scaffold", "Length", "X_Z", "Abnormal_sex_linked","pVal", "homogametic_median", "heterogametic_median")
+
+write.table(scaffTable, scafFile,  quote=F, row.names=F, col.names=TRUE, sep="\t")
+
+
+cat("Inferred sex for each sample and information on normalized depth written to", sexFile, "\n\n")
+
+cat("Inferred sex for scaffolds and information on normalized depth written to", scafFile, "\n\n")
+
 
 abnormalsexlinked <- sex$SexScaffolds$Name[sex$SexScaffolds$Abnormal_sex_linked_Scaffold]
 xz <- sex$SexScaffolds$Name[sex$SexScaffolds$X_Z_Scaffolds]
