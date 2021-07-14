@@ -279,7 +279,7 @@ makeIndTable <- function(dat){
 
     XZscaff <- dat$SexScaffolds$X_Z_Scaffolds
     keepNorm <- dat$dat[[1]]$normScafs
-    d <- data.frame(Sample = names(sex$dat), Inferred_sex = sex$sex,
+    d <- data.frame(Sample = names(dat$dat), Inferred_sex = dat$sex,
                     Median_depth_sex_scaffolds = sapply(dat$dat, function(x) median(x$norm[XZscaff])),
                     Nreads = sapply(dat$dat, function(x) sum(x$Nreads)),
                     NreadsNormalizing = sapply(dat$dat, function(x) sum(x$Nreads[keepNorm])),
