@@ -22,9 +22,9 @@ SATC is just a set of R functions. You can use SATC in R, in an interactive shin
 samtools idxstats myFile.bam > myFile.idxstats
 ```
 
-## Shiny app
+## GUI implementation
 
-We have implemented SATC in a shiny app, where you can upload your data, interactively run the analyses and download the output:
+We have implemented a Graphical User Interface (GUI) version of SATC as a shiny app, where you can upload your data, interactively run the analyses and download the output:
 
 [Link to SATC shiny](http://popgen.dk:3838/genis/satc/)
 
