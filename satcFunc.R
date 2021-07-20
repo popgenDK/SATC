@@ -92,7 +92,7 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.
             cov <- x$Nreads[normScarfs]/x$Length[normScarfs]/denom 
             if(diff(range(cov)) > 0.3){
                 warning("large difference in covarage of the scaffolds used for normalization. Consider using the median instead (--useMedian TRUE) or manually choose scaffolds (--normScaffolds)")
-            print(x[normScarfs,])
+            print(normScarfs)
               }
         }
         x
