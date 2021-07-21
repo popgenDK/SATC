@@ -1,4 +1,5 @@
 #!/usr/bin/env R
+require(mclust)
 col12<-c("#FFB7FC","#ef8a62","#fddbc7","#d1e5f0","#FF106A","#FFB7FC")[c(1,5)]
 
 
