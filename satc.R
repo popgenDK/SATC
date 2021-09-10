@@ -42,8 +42,12 @@ if(pars$model == "gaussian"){
     library(mclust)  
 }
 
+normScaffolds <- pars$normScaffolds
+if(!is.null(pars$normScaffolds)) normScaffolds <- scan(pars$normScaffolds, what="df")
+
+
 sex <- satc(SPECIES,IDXFILE,OUTFOLD, minLength=pars$minLength, M=pars$M, weight=TRUE, # hard code bc FALSE doesn't work
-            K=pars$K, model=pars$model, normScaffolds=pars$normScaffolds, useMedian=pars$useMedian)
+            K=pars$K, model=pars$model, normScaffolds=normScaffolds, useMedian=pars$useMedian)
 
 
 cat("\nFinished all analyses\n\n")
