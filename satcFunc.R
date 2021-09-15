@@ -130,10 +130,12 @@ plotDepth <- function(dat,normOnly=FALSE,ylim,col,...){
 }
 
 sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian"){
-     model <- char.expand(model, c("gaussian","hclust"))
+    model <- char.expand(model, c("gaussian","hclust"))
+    
     mat_first <- sapply(dat,function(x) x$norm)
+    noNArow=apply(mat_first,1,function(x) ifelse(sum(is.na(x))==0,TRUE,FALSE))
     #center
-    mat <- mat_first-rowMeans(mat_first)
+    mat <- mat_first[noNArow,]-rowMeans(mat_first[noNArow,])
     
     #    pca <- prcomp(t(mat),scale=F)
     maxRank <- min(dim(mat))
@@ -157,7 +159,9 @@ sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian"){
         hh<-hclust(dist(d))
         g <- cutree(hh, k=2) # cut
     }
-     
+
+    if(sum(g==1) ==1 |  sum(g==2) ==1 ) stop("Dataset can not be used for sex determination (poor clustering). One of the inferred sex groups only have one member.")
+
     beta <- rowMeans(mat[,g==1])-rowMeans(mat[,g==2])
     if( mean(beta[ abs(beta) > 0.4 & abs(beta) < 0.6]) > 0 )
         sex <- c("homomorphic","heteromorphic")[g]
@@ -174,6 +178,7 @@ sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian"){
     sexAssoScafs <- pval < 0.05/nrow(mat) #new
     list(dat=dat,pca=pca,sex=sex,SexScaffolds=data.frame(Name=dat[[1]][,1],Length=dat[[1]][,2],X_Z_Scaffolds=sexScafs,Abnormal_sex_linked_Scaffolds=sexAssoScafs,Pval=pval,homoMedian=homoMedian,heteroMedian=heteroMedian,stringsAsFactors = FALSE))
 }
+
 
 plotGroup <- function(x,main=""){
     par(mar=c(4.1,4.6,3.1,2.1))
