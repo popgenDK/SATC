@@ -51,7 +51,7 @@ rFilt <- filterScaffold(dat=idx,minLength=1e5,M=5)
 
 ##plot normalized depth
 plotDepth(rFilt) ##all scaffs
-plotDepth(rFilt,normOnly=TRUE) ##scaffs used for normalization (look for outliners)
+plotDepth(rFilt,normOnly=TRUE) ##scaffolds used for normalization (look for outliers)
 
 ## identify sex and sex scaffolds
 sex <- sexDetermine(dat=rFilt, K=2, model="gaussian") 
