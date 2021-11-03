@@ -163,6 +163,10 @@ sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian"){
     if(sum(g==1) ==1 |  sum(g==2) ==1 ) stop("Dataset can not be used for sex determination (poor clustering). One of the inferred sex groups only have one member.")
 
     beta <- rowMeans(mat[,g==1])-rowMeans(mat[,g==2])
+
+    if(!any( abs(beta) > 0.4 & abs(beta) < 0.6))
+        stop("No good candidates for sex scaffold found based on depth of coverage. Try changing the clustering method, or consider SATC might not work for your data.")
+
     if( mean(beta[ abs(beta) > 0.4 & abs(beta) < 0.6]) > 0 )
         sex <- c("homomorphic","heteromorphic")[g]
     else{
