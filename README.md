@@ -167,5 +167,4 @@ SATC can also run fully in R (see example above in **Running in R**).
 ## Citation
 Please cite our papers:
 
-Nursyifa C, Brüniche-Olsen A, Garcia-Erill G, Heller R, Albrechtsen A. () Joint identification of sex and sex-linked scaffolds in non-model organisms using low depth sequencing data.
-https://doi.org/10.1101/2021.03.03.433779
+ Nursyifa, C., Brüniche-Olsen, A., Garcia-Erill, G., Heller, R., & Albrechtsen, A. (2021). Joint identification of sex and sex-linked scaffolds in non-model organisms using low depth sequencing data. Molecular Ecology Resources, 00, 1– 10. https://doi.org/10.1111/1755-0998.13491 
