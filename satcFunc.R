@@ -105,7 +105,7 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.
     meanNormDepth <- rowMeans(sapply(normed,function(x) x$norm))
     keep <- meanNormDepth > range[1] & meanNormDepth<range[2]
     if(saveWarn)
-        return(list(lapply(normed,function(x) x[keep,])),warnMsg)
+        return(list(lapply(normed,function(x) x[keep,]),warnMsg))
     lapply(normed,function(x) x[keep,])
 }
 
