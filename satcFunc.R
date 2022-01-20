@@ -57,7 +57,7 @@ readArgs <- function(args){
 }
 
 
-filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.3,2),useMedian=FALSE){
+filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.3,2),useMedian=FALSE,saveWarn=FALSE){
     #order of size of scaffold
     ord <- order(dat[[1]]$V2,decreasing=T)
 
@@ -69,7 +69,7 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.
     }
     ## filter and sort idxstat files
     filtered <- lapply(dat,fun)
-
+    warnMsg <- "none"
     ## scaffolds use for normalization
     if(!is.null(normScaffolds)){
       #  normScaffolds <- scan(normScaffolds, what="d")
@@ -92,7 +92,10 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.
             x$norm <- x$Nreads/x$Length/denom
             cov <- x$Nreads[normScarfs]/x$Length[normScarfs]/denom 
             if(diff(range(cov)) > 0.3){
-                warning("large difference in covarage of the scaffolds used for normalization. Consider using the median instead (--useMedian TRUE) or manually choose scaffolds (--normScaffolds)")
+                if(saveWarn)
+                    warnMsg <- "large difference in covarage of the scaffolds used for normalization. Consider using the median instead or manually choose normalizing scaffolds "
+                else 
+                    warning("large difference in covarage of the scaffolds used for normalization. Consider using the median instead (--useMedian TRUE) or manually choose scaffolds (--normScaffolds)")
            # print(normScarfs)
               }
         }
@@ -101,6 +104,8 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.
     normed <- lapply(filtered,norma)
     meanNormDepth <- rowMeans(sapply(normed,function(x) x$norm))
     keep <- meanNormDepth > range[1] & meanNormDepth<range[2]
+    if(saveWarn)
+        return(list(lapply(normed,function(x) x[keep,])),warnMsg)
     lapply(normed,function(x) x[keep,])
 }
 
