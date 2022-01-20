@@ -90,18 +90,18 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.
         else{
             denom <- sum(x$Nreads[normScarfs])/sum(x$Length[normScarfs])
             x$norm <- x$Nreads/x$Length/denom
-            cov <- x$Nreads[normScarfs]/x$Length[normScarfs]/denom 
-            if(diff(range(cov)) > 0.3){
-                if(saveWarn)
-                    warnMsg <- "large difference in covarage of the scaffolds used for normalization. Consider using the median instead or manually choose normalizing scaffolds "
-                 
-                 warning("large difference in covarage of the scaffolds used for normalization. Consider using the median instead (--useMedian TRUE) or manually choose scaffolds (--normScaffolds)")
-           # print(normScarfs)
-              }
         }
         x
     }
     normed <- lapply(filtered,norma)
+    cov <- sapply(normed,function(x) diff(range(x[x[,"normScafs"],"norm"])))
+    if(any(cov>0.3)){
+        warning("large difference in covarage of the scaffolds used for normalization. Consider using the median instead (--useMedian TRUE) or manually choose scaffolds (--normScaffolds)")
+        warnMsg <- "large difference in covarage of the scaffolds used for normalization. Consider using the median instead or manually choose normalizing scaffolds "
+              
+           
+    }
+        
     meanNormDepth <- rowMeans(sapply(normed,function(x) x$norm))
     keep <- meanNormDepth > range[1] & meanNormDepth<range[2]
     if(saveWarn)
