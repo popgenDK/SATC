@@ -94,8 +94,8 @@ filterScaffold <- function(dat,minLength=1e5,M=5,normScaffolds = NULL,range=c(0.
             if(diff(range(cov)) > 0.3){
                 if(saveWarn)
                     warnMsg <- "large difference in covarage of the scaffolds used for normalization. Consider using the median instead or manually choose normalizing scaffolds "
-                else 
-                    warning("large difference in covarage of the scaffolds used for normalization. Consider using the median instead (--useMedian TRUE) or manually choose scaffolds (--normScaffolds)")
+                 
+                 warning("large difference in covarage of the scaffolds used for normalization. Consider using the median instead (--useMedian TRUE) or manually choose scaffolds (--normScaffolds)")
            # print(normScarfs)
               }
         }
