@@ -208,7 +208,7 @@ plotScafs <- function(x,ylim,abnormal=FALSE,main=""){
     if(abnormal)
         keep<- c(keep, as.character(x$dat[[1]][,1][sexLinkedScaf & !XZScaf])) # this forces correct order in plot
     
-    mat <- mat[keep,]
+    mat <- mat[keep,,drop=FALSE]
     #nam <- gsub("NW_0176|NW_0050","",rownames(mat))
     nam <- rownames(mat)
 
