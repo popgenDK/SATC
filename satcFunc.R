@@ -134,7 +134,7 @@ plotDepth <- function(dat,normOnly=FALSE,ylim,col,...){
     title(xlab="scaffold length", line=4, cex.lab=1.5)
 }
 
-sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian"){
+sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian",lengthWeight=FALSE){
     model <- char.expand(model, c("gaussian","hclust"))
     
     mat_first <- sapply(dat,function(x) x$norm)
@@ -143,6 +143,8 @@ sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian"){
     mat <- mat_first[noNArow,]-rowMeans(mat_first[noNArow,])
     
     #    pca <- prcomp(t(mat),scale=F)
+    if(lengthWeight) ## weight by squered chromosome length
+        mat <- mat * sqrt(rFilt[[1]][,"Length"])
     maxRank <- min(dim(mat))
     svd <- svd(t(mat))
     SIG <- matrix(0,maxRank,maxRank)
