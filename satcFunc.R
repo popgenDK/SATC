@@ -133,6 +133,10 @@ plotDepth <- function(dat,normOnly=FALSE,ylim,col,...){
     title(ylab="normalized depth", line=4, cex.lab=1.5)
     title(xlab="scaffold length", line=4, cex.lab=1.5)
 }
+
+               
+  
+
 sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian",lengthWeight=FALSE){
     model <- char.expand(model, c("gaussian","hclust"))
     
@@ -182,15 +186,18 @@ sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian",lengthWeight=FALSE
     }
     homoMedian <- apply( mat_first [,sex=="homomorphic"],1,median)
     heteroMedian <- apply( mat_first [,sex=="heteromorphic"],1,median) 
-    sexScafs <- beta > 0.4 & beta < 0.6
-    outlierScafs<- rowMeans(mat_first) > 1.3
-    autoScafs<- as.logical
     pval <- apply(mat,1,function(x) t.test(x~sex)$p.value) #new
     sexAssoScafs <- pval < 0.05/nrow(mat) #new
-    list(dat=dat,pca=pca,sex=sex,SexScaffolds=data.frame(Name=dat[[1]][,1],Length=dat[[1]][,2],X_Z_Scaffolds=sexScafs,Abnormal_sex_linked_Scaffolds=sexAssoScafs,Pval=pval,homoMedian=homoMedian,heteroMedian=heteroMedian,stringsAsFactors = FALSE))
+
+    X_Z_Scaffold <- beta > 0.4 & beta < 0.6  & homoMedian<1.3 & homoMedian>0.7 & heteroMedian<0.7 & heteroMedian>0.3 & sexAssoScafs
+    Abnormal <- sexAssoScafs & !X_Z_Scaffold
+    outlierScafs<- rowMeans(mat_first) > 1.3
+    autoScafs<- as.logical
+
+    list(dat=dat,pca=pca,sex=sex,SexScaffolds=data.frame(Name=dat[[1]][,1],Length=dat[[1]][,2],X_Z_Scaffolds=X_Z_Scaffold,Abnormal_sex_linked_Scaffolds=Abnormal,Pval=pval,homoMedian=homoMedian,heteroMedian=heteroMedian,stringsAsFactors = FALSE))
 }
-
-
+             
+               
 plotGroup <- function(x,main=""){
     par(mar=c(4.1,4.6,3.1,2.1))
     lab <- as.factor(x$sex)
