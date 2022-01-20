@@ -144,7 +144,7 @@ sexDetermine <- function(dat,K=2,weight=TRUE,model="gaussian",lengthWeight=FALSE
     
     #    pca <- prcomp(t(mat),scale=F)
     if(lengthWeight) ## weight by squered chromosome length
-        mat <- mat * sqrt(rFilt[[1]][,"Length"])
+        mat <- mat * sqrt(dat[[1]][,"Length"])
     maxRank <- min(dim(mat))
     svd <- svd(t(mat))
     SIG <- matrix(0,maxRank,maxRank)
