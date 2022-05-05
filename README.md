@@ -133,8 +133,8 @@ Furthermore, SATC also produces two plots in png format:
 
 And two lists:
 
-- \*\_sexlinked_scaff.list: list with all sex linked scaffolds with depth difference consistent with being XZ chrosomome.
-- \*\_XZ_scaff.list: a list with all sex linked scaffolds.
+- \*\_sexlinked_scaff.list: list of abnormal sex-linked scaffolds with depth difference consistent with being XZ chrosomome.
+- \*\_XZ_scaff.list: a list of sex linked scaffolds.
 
 and
 
