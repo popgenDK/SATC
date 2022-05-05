@@ -109,8 +109,7 @@ write(xz, outlist2)
 
 cat("List of abnormal sex linked scaffolds written to", outlist1, "\n")
 cat("List of XZ scaffolds written to", outlist2, "\n\n")
-cat("All scaffolds in", outlist2,"are also in", outlist1, "\n\n")
-cat("We recommend excluding scaffolds in", outlist1, "from any analyses that should focus on autosomes.\nIf you want to do analyses in sexual chromosomes we recommend to use only scaffolds in", outlist2, "which seem well behaved regarding ploidy difference between sexes\n\n")
+cat("We recommend excluding scaffolds in", outlist1, " and in ",outlist2, " from any analyses that should focus on autosomes.\nIf you want to do analyses in sexual chromosomes we recommend to use only scaffolds in", outlist2, "which seem well behaved regarding ploidy difference between sexes\n\n")
 
 
 datout <-  paste0(OUTFOLD,"/",SPECIES,".sexSamples_sexScaffolds.rds")
