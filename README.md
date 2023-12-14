@@ -26,7 +26,7 @@ samtools idxstats myFile.bam > myFile.idxstats
 
 We have implemented a Graphical User Interface (GUI) version of SATC as a shiny app, where you can upload your data, interactively run the analyses and download the output:
 
-[Link to SATC shiny](http://popgen.dk:3838/genis/satc/)
+[Link to SATC shiny](http://pontus.popgen.dk:3838/genis/satc/)
 
 You can find more information on how to run SATC in shiny inside the app.
 
